@@ -10,41 +10,27 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 
 // Step 1 Schema (Strict types for Step 1)
-const step1Schema = z
-  .object({
-    fullName: z.string().min(3, "Full Name is required"),
-    email: z
-      .string()
-      .email("Invalid email")
-      .refine((val) => val.endsWith("@nsec.ac.in"), {
-        message: "Must be a college email (@nsec.ac.in)",
-      }),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z
-      .string()
-      .min(6, "Confirm Password must be at least 6 characters"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
+const step1Schema = z.object({
+  email: z
+    .string()
+    .email("Invalid email")
+    .refine((val) => val.endsWith("@nsec.ac.in"), {
+      message: "Must be a valid NSEC email",
+    }),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  secretCode: z.string().min(6, "Secret Code must be at least 6 characters"),
+});
 
 // Step 2 Schema (Strict types for Step 2)
 const otpSchema = z.object({
   otp: z.array(z.string().length(1)).length(6),
 });
 
-// Step 3 Schema (Strict types for Step 3)
-const usernameSchema = z.object({
-  username: z.string().min(3, "Username must be at least 3 characters"),
-});
-
 type Step1FormData = z.infer<typeof step1Schema>;
 type Step2FormData = z.infer<typeof otpSchema>;
-type Step3FormData = z.infer<typeof usernameSchema>;
 
 export default function SignUpPage() {
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<1 | 2>(1);
   const [resendTimer, setResendTimer] = useState<number>(60);
   const [usermail, setUsermail] = useState<string>("");
 
@@ -63,10 +49,9 @@ export default function SignUpPage() {
   } = useForm<Step1FormData>({
     resolver: zodResolver(step1Schema),
     defaultValues: {
-      fullName: "",
       email: "",
       password: "",
-      confirmPassword: "",
+      secretCode: "",
     },
     mode: "onChange",
   });
@@ -84,27 +69,13 @@ export default function SignUpPage() {
     mode: "onChange",
   });
 
-  // Step 3 Form Hook
-  const {
-    register: registerStep3,
-    handleSubmit: handleSubmitStep3,
-    formState: { errors: errorsStep3, isSubmitting: isSubmittingStep3 },
-    setValue: setValueStep3,
-    getValues: getValuesStep3,
-  } = useForm<Step3FormData>({
-    resolver: zodResolver(usernameSchema),
-    defaultValues: { username: "" },
-    mode: "onChange",
-  });
-
   const onSubmitStep1 = async (data: Step1FormData) => {
     console.log("Step 1 Data:", data);
     try {
-      const response = await axios.post("/api/auth/signup/step1", {
-        name: data.fullName,
+      const response = await axios.post("/api/auth/admin/login", {
         email: data.email,
         password: data.password,
-        confirmPassword: data.confirmPassword,
+        secretCode: data.secretCode,
       });
       if (response.status === 200) {
         setUsermail(data.email); // Store email for OTP verification
@@ -129,10 +100,11 @@ export default function SignUpPage() {
         otp: data.otp.join(""),
       });
       if (response.status === 200) {
-        toast.success(response.data.message || "OTP verified!");
+        toast.success(response.data.message || "Welcome Admin!");
         // Proceed to Step 3 if OTP is verified
-        setValueStep3("username", "Robin Hood");
-        setStep(3);
+        setTimeout(() => {
+          router.push("/admin-panel");
+        }, 1500);
       } else {
         toast.error(response.data.message || "Invalid OTP");
       }
@@ -140,28 +112,6 @@ export default function SignUpPage() {
       console.log(error);
       toast.error("Some internal error");
     }
-  };
-
-  const onSubmitStep3 = async (data: Step3FormData) => {
-    console.log("Step 3 Username:", data.username);
-    try {
-      const response = await axios.post("/api/auth/signup/verify-username", {
-        email: usermail,
-        username: data.username,
-      });
-      if (response.status === 200) {
-        toast.success(response.data.message || "Account created successfully!");
-      } else {
-        toast.error(response.data.message || "Some internal error");
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("Some internal error");
-    }
-    toast.success("Account created successfully!");
-    setTimeout(() => {
-      router.push("/login");
-    }, 1500);
   };
 
   const handleOtpChange = (index: number, value: string) => {
@@ -205,20 +155,14 @@ export default function SignUpPage() {
             transition={{ duration: 0.4 }}
           >
             <h1 className="mb-6 text-3xl font-bold text-center text-gray-800">
-              {step === 1
-                ? "Create Account"
-                : step === 2
-                ? "Verify Your Email"
-                : "Choose Username"}
+              {step === 1 ? "Login as Admin" : "Verify OTP"}
             </h1>
 
             <form
               onSubmit={
                 step === 1
                   ? handleSubmitStep1(onSubmitStep1)
-                  : step === 2
-                  ? handleSubmitStep2(onSubmitStep2)
-                  : handleSubmitStep3(onSubmitStep3)
+                  : handleSubmitStep2(onSubmitStep2)
               }
               className="space-y-6"
             >
@@ -227,28 +171,12 @@ export default function SignUpPage() {
                 <>
                   <div>
                     <label className="block mb-1 text-sm font-medium text-gray-700">
-                      Full Name
-                    </label>
-                    <input
-                      {...registerStep1("fullName")}
-                      className="w-full rounded-lg border border-gray-300 p-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-                      placeholder="Enter your full name"
-                    />
-                    {errorsStep1.fullName && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errorsStep1.fullName.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block mb-1 text-sm font-medium text-gray-700">
-                      College Email
+                      Admin Email
                     </label>
                     <input
                       {...registerStep1("email")}
                       className="w-full rounded-lg border border-gray-300 p-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-                      placeholder="you@nsec.ac.in"
+                      placeholder="admin@nsec.ac.in"
                     />
                     {errorsStep1.email && (
                       <p className="mt-1 text-sm text-red-500">
@@ -276,17 +204,17 @@ export default function SignUpPage() {
 
                   <div>
                     <label className="block mb-1 text-sm font-medium text-gray-700">
-                      Confirm Password
+                      Secret Code
                     </label>
                     <input
-                      {...registerStep1("confirmPassword")}
+                      {...registerStep1("secretCode")}
                       type="password"
                       className="w-full rounded-lg border border-gray-300 p-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                       placeholder="Confirm your password"
                     />
-                    {errorsStep1.confirmPassword && (
+                    {errorsStep1.secretCode && (
                       <p className="mt-1 text-sm text-red-500">
-                        {errorsStep1.confirmPassword.message}
+                        {errorsStep1.secretCode.message}
                       </p>
                     )}
                   </div>
@@ -337,49 +265,22 @@ export default function SignUpPage() {
                 </>
               )}
 
-              {/* Step 3 */}
-              {step === 3 && (
-                <div>
-                  <div>
-                    <label className="block mb-1 text-sm font-medium text-gray-700">
-                      Username
-                    </label>
-                    <input
-                      {...registerStep3("username")}
-                      className="w-full rounded-lg border border-gray-300 p-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-                      placeholder="Choose a username"
-                    />
-                    {errorsStep3.username && (
-                      <p className="mt-1 text-sm text-red-500">
-                        {errorsStep3.username.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              )}
-
               <button
                 type="submit"
                 className="w-full py-2 mt-6 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
-                disabled={
-                  step === 1
-                    ? isSubmittingStep1
-                    : step === 2
-                    ? isSubmittingStep2
-                    : isSubmittingStep3
-                }
+                disabled={step === 1 ? isSubmittingStep1 : isSubmittingStep2}
               >
                 {step === 1 ? "Next" : step === 2 ? "Verify OTP" : "Finish"}
               </button>
             </form>
             <div className="mt-4 text-center">
               <p className="text-sm text-gray-500">
-                Already have an account?{" "}
+                Login as a User?{" "}
                 <a
                   href="/login"
                   className="text-indigo-600 hover:text-indigo-700 font-medium"
                 >
-                  Login
+                  User Login
                 </a>
               </p>
             </div>
