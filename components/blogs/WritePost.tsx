@@ -5,6 +5,9 @@ import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.bubble.css";
 import Image from "next/image";
 import styles from "@/components/styles/editor.module.css";
+import axios from "axios";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
@@ -18,9 +21,9 @@ const toolbarOptions = [
 ];
 
 // Optional: restrict tags to known values
-type Tag = "Intership" | "Job" | "Guide" | "Tech Article" | "Story";
+type Tag = "Internship" | "Job" | "Guide" | "Tech Article" | "Story";
 const tagOptions: Tag[] = [
-  "Intership",
+  "Internship",
   "Job",
   "Guide",
   "Tech Article",
@@ -34,8 +37,37 @@ export default function WritePost() {
   const [tags, setTags] = useState<Tag[]>([]);
   const [open, setOpen] = useState<boolean>(false);
 
-  const handlePublish = (): void => {
-    console.log("Publishing...");
+  const router = useRouter();
+
+  const handlePublish = async (): Promise<void> => {
+    try {
+      const payload = {
+        title,
+        content,
+        tags,
+        authorComment: comment,
+      };
+
+      const response = await axios.post("/api/blog/create-blog", payload, {
+        withCredentials: true,
+      });
+
+      console.log("Blog created:", response.data);
+      toast.success(
+        response.data.message || "Login successful! Redirecting..."
+      );
+      router.push("/blogs");
+    } catch (error: any) {
+      console.error(
+        "Error publishing blog:",
+        error?.response?.data || error.message
+      );
+      // Optionally show error toast here
+      const errorMessage =
+        error.response?.data?.message ||
+        "Something went wrong. Please try again.";
+      toast.error(errorMessage);
+    }
   };
 
   const handleSaveDraft = (): void => {

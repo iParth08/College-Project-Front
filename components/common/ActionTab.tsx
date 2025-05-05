@@ -1,14 +1,28 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAppDispatch, useAppSelector } from "@/lib/reduxstore/hooks";
+import { login } from "@/lib/reduxstore/authSlice";
+import { set } from "react-hook-form";
 
-interface Props {
-  isLoggedIn: boolean;
-  username?: string;
-}
-const ActionTab: React.FC<Props> = ({ isLoggedIn, username }) => {
+const ActionTab = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+    const userdata = localStorage.getItem("user");
+
+    if (isAuthenticated && userdata) {
+      const parsedUser = JSON.parse(userdata);
+      dispatch(login(parsedUser)); // Dispatch login action with user data
+      setIsLoggedIn(true);
+    }
+  }, []);
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-50 p-4 w-[600px] mx-auto">
       <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
@@ -31,7 +45,7 @@ const ActionTab: React.FC<Props> = ({ isLoggedIn, username }) => {
                 <div className="text-lg flex flex-col items-center mt-5 space-y-2">
                   {isLoggedIn ? (
                     <>
-                      <p>Dear, {username}!</p>
+                      <p>Dear, Member!</p>
                       <Link href="/home">
                         <button className="bg-white text-blue-500 px-4 py-2 rounded-lg shadow-md hover:bg-blue-100 transition duration-300 ease-in-out">
                           Welcome Home

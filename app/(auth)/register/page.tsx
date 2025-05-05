@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
+import Link from "next/link";
 
 // Step 1 Schema (Strict types for Step 1)
 const step1Schema = z
@@ -98,7 +99,7 @@ export default function SignUpPage() {
   });
 
   const onSubmitStep1 = async (data: Step1FormData) => {
-    console.log("Step 1 Data:", data);
+    // console.log("Step 1 Data:", data);
     try {
       const response = await axios.post("/api/auth/signup/step1", {
         name: data.fullName,
@@ -143,7 +144,7 @@ export default function SignUpPage() {
   };
 
   const onSubmitStep3 = async (data: Step3FormData) => {
-    console.log("Step 3 Username:", data.username);
+    // console.log("Step 3 Username:", data.username);
     try {
       const response = await axios.post("/api/auth/signup/verify-username", {
         email: usermail,
@@ -360,7 +361,7 @@ export default function SignUpPage() {
 
               <button
                 type="submit"
-                className="w-full py-2 mt-6 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                className="w-full py-2 mt-6 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 cursor-pointer"
                 disabled={
                   step === 1
                     ? isSubmittingStep1
@@ -375,12 +376,12 @@ export default function SignUpPage() {
             <div className="mt-4 text-center">
               <p className="text-sm text-gray-500">
                 Already have an account?{" "}
-                <a
+                <Link
                   href="/login"
                   className="text-indigo-600 hover:text-indigo-700 font-medium"
                 >
                   Login
-                </a>
+                </Link>
               </p>
             </div>
           </motion.div>

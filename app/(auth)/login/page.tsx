@@ -7,6 +7,9 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { useAppDispatch } from "@/lib/reduxstore/hooks";
+import { login } from "@/lib/reduxstore/authSlice";
 
 const loginSchema = z.object({
   username: z.string().min(3, "Username or Student ID is required"),
@@ -16,6 +19,7 @@ const loginSchema = z.object({
 type LoginFormInputs = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
+  const dispatch = useAppDispatch(); // Assuming you have set up Redux
   const router = useRouter();
   const {
     register,
@@ -26,31 +30,33 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: LoginFormInputs) => {
-    // try {
-    //   const response = await axios.post(
-    //     "/api/auth/login",
-    //     {
-    //       identifier: data.username,
-    //       password: data.password,
-    //     },
-    //     {
-    //       withCredentials: true, // Important if backend sets cookies
-    //     }
-    //   );
-    //   if (response.status === 200) {
-    //     toast.success(
-    //       response.data.message || "Login successful! Redirecting..."
-    //     );
-    //     router.push("/home"); // Redirect after success
-    //   }
-    // } catch (error: any) {
-    //   console.error(error);
-    //   // Improved error handling:
-    //   const errorMessage =
-    //     error.response?.data?.message ||
-    //     "Something went wrong. Please try again.";
-    //   toast.error(errorMessage);
-    // }
+    try {
+      const response = await axios.post(
+        "/api/auth/login",
+        {
+          identifier: data.username,
+          password: data.password,
+        },
+        {
+          withCredentials: true, // Important if backend sets cookies
+        }
+      );
+      if (response.status === 200) {
+        console.log(response.data);
+        dispatch(login(response.data.user)); // Dispatch login action with user data
+        toast.success(
+          response.data.message || "Login successful! Redirecting..."
+        );
+        router.push("/home"); // Redirect after success
+      }
+    } catch (error: any) {
+      console.error(error);
+      // Improved error handling:
+      const errorMessage =
+        error.response?.data?.message ||
+        "Something went wrong. Please try again.";
+      toast.error(errorMessage);
+    }
   };
 
   return (
@@ -108,7 +114,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full rounded-lg bg-indigo-600 p-2 text-white hover:bg-indigo-700 transition disabled:opacity-50"
+                className="w-full rounded-lg bg-indigo-600 p-2 text-white hover:bg-indigo-700 transition disabled:opacity-50 cursor-pointer"
               >
                 {isSubmitting ? "Signing In..." : "Sign In"}
               </button>
@@ -116,22 +122,22 @@ export default function LoginPage() {
 
             <p className="mt-6 text-center text-gray-500 text-sm">
               New here?{" "}
-              <a
+              <Link
                 href="/register"
                 className="font-semibold text-indigo-600 hover:underline"
               >
                 Create an account
-              </a>
+              </Link>
             </p>
 
             <p className="mt-6 text-center text-gray-500 text-sm">
               What the issue?{" "}
-              <a
+              <Link
                 href="/resetpassword"
                 className="font-semibold text-red-600 hover:underline"
               >
                 Forgot Password?
-              </a>
+              </Link>
             </p>
           </motion.div>
         </AnimatePresence>

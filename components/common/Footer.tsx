@@ -3,82 +3,95 @@ import Logo from "./Logo";
 import Title from "./Title";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { navlinks, isLoggedIn } from "@/lib/constant";
+import { navlinks } from "@/lib/constant";
 import { suggestedEvents } from "@/lib/dummy-db/event";
 import { suggestedBlogs } from "@/lib/dummy-db/blog";
 import { LuLogIn } from "react-icons/lu";
+import { useAppSelector } from "@/lib/reduxstore/hooks";
 
 const Footer = () => {
+  const isLoggedIn = true;
+  // const isLoggedIn = useAppSelector((state) => state.auth.isAuthenticated);
   return (
-    <div className="max-w-full bg-zinc-800 text-white flex flex-col items-center p-[30px]">
+    <footer className="w-full bg-zinc-900 text-white py-10 px-5 md:px-16">
       {isLoggedIn ? (
-        <div className="w-full md:w-[90%]">
-          <div className="flex items-center justify-between mb-4">
-            <Logo styles="text-5xl" />
-            <Title styles="text-3xl" />
-          </div>
-
-          <div className="flex flex-col md:flex-row justify-evenly items-center mb-4">
-            <section className="w-full flex flex-col mb-6 md:mb-0">
-              <div className="flex flex-col space-y-2 items-center md:items-start">
-                {navlinks.map((link) => (
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Navigation Links */}
+          <div>
+            <h3 className="text-lg font-semibold mb-3 text-indigo-400">
+              Explore
+            </h3>
+            <ul className="space-y-2">
+              {navlinks.map((link) => (
+                <li key={link.name}>
                   <Link
-                    key={link.name}
                     href={link.path}
-                    className="hover:underline text-lg hover:text-indigo-400"
+                    className="hover:text-indigo-300 transition"
                   >
                     {link.name}
                   </Link>
-                ))}
-              </div>
-            </section>
-            <section className="w-full  flex flex-col mb-6 md:mb-0 space-y-2 items-center md:items-center">
-              <h2 className="text-2xl">Recent Events</h2>
-              {/* Example content, replace with actual data */}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Recent Events */}
+          <div>
+            <h3 className="text-lg font-semibold mb-3 text-indigo-400">
+              Recent Events
+            </h3>
+            <ul className="space-y-2">
               {suggestedEvents.map((event) => (
-                <Link
-                  key={event.id}
-                  href={`/events/${event.id}`}
-                  className="hover:underline text-lg hover:text-indigo-400"
-                >
-                  <p>{event.name}</p>
-                </Link>
+                <li key={event.id}>
+                  <Link
+                    href={`/events/${event.id}`}
+                    className="hover:text-indigo-300 transition"
+                  >
+                    {event.name}
+                  </Link>
+                </li>
               ))}
-            </section>
-            <section className="w-full  flex flex-col space-y-2 items-center md:items-end">
-              <h2 className="text-2xl">Recent Blogs</h2>
-              {/* Example content, replace with actual data */}
+            </ul>
+          </div>
+
+          {/* Recent Blogs */}
+          <div>
+            <h3 className="text-lg font-semibold mb-3 text-indigo-400">
+              Recent Blogs
+            </h3>
+            <ul className="space-y-2">
               {suggestedBlogs.map((blog) => (
-                <Link
-                  key={blog.id}
-                  href={`/blogs/${blog.id}`}
-                  className="hover:underline text-lg hover:text-indigo-400"
-                >
-                  <p>{blog.title}</p>
-                </Link>
+                <li key={blog.id}>
+                  <Link
+                    href={`/blogs/${blog.id}`}
+                    className="hover:text-indigo-300 transition"
+                  >
+                    {blog.name}
+                  </Link>
+                </li>
               ))}
-            </section>
+            </ul>
           </div>
         </div>
       ) : (
-        <div className="flex flex-col items-center space-y-2.5">
-          <Logo styles="text-5xl" />
-          <Title styles="text-3xl" />
-          <div className="text-center flex flex-col items-center justify-center mb-4 space-y-2.5">
-            <p>Join and Explore your Inner Capmus</p>
-            <Link href={"/register"}>
-              <Button className="md:text-xl bg-gray-50 text-zinc-800 hover:bg-indigo-400 hover:text-white cursor-pointer text-sm flex items-center space-x-2">
-                <LuLogIn />
-                Register
-              </Button>
-            </Link>
-          </div>
+        <div className="flex flex-col items-center justify-center space-y-4 max-w-md mx-auto text-center">
+          <Logo styles="text-4xl md:text-5xl" />
+          <Title styles="text-xl md:text-2xl text-gray-300" />
+          <p className="text-gray-400">Join and explore your inner campus.</p>
+          <Link href={"/register"}>
+            <Button className="md:text-lg bg-white text-zinc-800 hover:bg-indigo-500 hover:text-white px-6 py-2">
+              <LuLogIn className="mr-2" />
+              Register
+            </Button>
+          </Link>
         </div>
       )}
-      <div className="mt-6">
+
+      {/* Footer bottom */}
+      <div className="border-t border-zinc-700 mt-10 pt-5 text-center text-sm text-gray-500">
         © {new Date().getFullYear()} ClubConnect. All rights reserved.
       </div>
-    </div>
+    </footer>
   );
 };
 

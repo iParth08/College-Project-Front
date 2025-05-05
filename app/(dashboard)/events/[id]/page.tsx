@@ -1,4 +1,4 @@
-import EventComments from "@/components/comments/EventComments";
+import EventCommentPanel from "@/components/comments/EventComments";
 import SingleEvent from "@/components/events/SingleEvent";
 import React from "react";
 
@@ -6,7 +6,10 @@ const Event = () => {
   return (
     <div>
       <SingleEvent />
-      <EventComments />
+      <EventCommentPanel
+        eventId="e1"
+        user={{ name: "Alice", image: "/avatar.jpg" }}
+      />
     </div>
   );
 };

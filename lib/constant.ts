@@ -1,4 +1,4 @@
-export const isLoggedIn = true; // Replace with actual login state
+export const isLoggedIn = false; // Replace with actual login state
 export const username = "Guest"; // Replace with actual username
 export const splashImageUrl = "/splash/event-cover.jpg"; // Replace with actual image URL
 

@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className="md:flex w-full h-screen">
       <SplashScreen backgroundImageUrl={splashImageUrl} />
-      <ActionTab isLoggedIn={isLoggedIn} username={username} />
+      <ActionTab />
     </div>
   );
 }

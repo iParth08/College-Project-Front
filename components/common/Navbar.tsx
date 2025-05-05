@@ -3,27 +3,30 @@ import Link from "next/link";
 import React, { useState } from "react";
 import Logo from "./Logo";
 import Title from "./Title";
-import Avatar from "./Avatar";
+import Avatar from "./AvatarBox";
 import { Button } from "../ui/button";
-import Ranking from "./Ranking";
 import { HiOutlineBars3 } from "react-icons/hi2";
-import { isLoggedIn, navlinks } from "@/lib/constant";
+import { navlinks } from "@/lib/constant";
 import { LuLogIn } from "react-icons/lu";
 import { usePathname } from "next/navigation";
+import { useAppSelector } from "@/lib/reduxstore/hooks";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false); // State for collapsible menu
   const pathname = usePathname();
+
+  // const isLoggedIn = useAppSelector((state) => state.auth.isAuthenticated);
+  const isLoggedIn = true;
 
   const handleMenuToggle = () => {
     setMenuOpen(!menuOpen);
   };
 
   return (
-    <div className="max-w-full h-[15vh] bg-gray-50 text-zinc-800 flex justify-between items-center px-[90px]">
+    <div className="fixed top-0 left-0 w-full h-[10vh] bg-gray-50 text-zinc-800 flex justify-between items-center px-[90px] shadow-md z-50 mb-[10vh]">
       <div className="flex space-x-6">
-        <Logo styles="md:text-3xl text-lg font-semibold" />
-        <Title styles="md:text-3xl text-lg text-indigo-500" />
+        <Logo styles="md:text-3xl text-lg" />
+        <Title styles="md:text-3xl text-lg text-indigo-500 font-semibold " />
       </div>
 
       {/* Main menu for larger screens */}
@@ -34,8 +37,8 @@ const Navbar = () => {
               key={link.name}
               href={link.path}
               className={`text-lg px-3 py-1 rounded-md transition-all duration-200 ${
-                pathname === link.path
-                  ? "text-indigo-500 underline"
+                pathname.startsWith(link.path)
+                  ? "bg-indigo-400 text-xl text-white rounded-3xl"
                   : "hover:text-indigo-400"
               }`}
             >
@@ -48,9 +51,8 @@ const Navbar = () => {
       {/* Avatar or Register button */}
       <div>
         {isLoggedIn ? (
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-4">
             <Avatar />
-            <Ranking />
           </div>
         ) : (
           <Link href={"/login"}>
@@ -75,7 +77,7 @@ const Navbar = () => {
 
       {/* Collapsible menu for small screens */}
       {menuOpen && (
-        <div className="md:hidden absolute top-[15vh] left-0 right-0 bg-zinc-800 text-white flex flex-col space-y-2 px-4 py-2">
+        <div className="md:hidden absolute top-[10vh] left-0 right-0 bg-zinc-800 text-white flex flex-col space-y-2 px-4 py-2 z-50">
           {navlinks.map((link) => (
             <Link
               key={link.name}
@@ -97,3 +99,8 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+//todo: add a ranking component to show the rank of the user in the navbar
+//? Animate the links in the navbar when hovered
+//? add avatar for user profile
+//Stick on the top of the page when scrolled down

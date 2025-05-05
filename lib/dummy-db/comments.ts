@@ -1,0 +1,121 @@
+export const dummyBlogComments = [
+  {
+    id: "c1",
+    blogId: "demo-blog-1",
+    author: { name: "Aarav Mehta", image: "" },
+    text: "This blog cleared up so many doubts I had—thank you!",
+    votes: 12,
+    replies: [
+      {
+        id: "r1",
+        blogId: "demo-blog-1",
+        parentId: "c1",
+        author: { name: "Priya Singh", image: "" },
+        text: "Same here! It was very beginner-friendly.",
+        votes: 4,
+      },
+    ],
+  },
+  {
+    id: "c2",
+    blogId: "demo-blog-1",
+    author: { name: "Ravi Verma", image: "" },
+    text: "Can you also cover edge cases for production setups?",
+    votes: 7,
+    replies: [
+      {
+        id: "r2",
+        blogId: "demo-blog-1",
+        parentId: "c2",
+        author: { name: "Author", image: "" },
+        text: "Yes! I’ll add those in a follow-up post soon.",
+        votes: 6,
+      },
+    ],
+  },
+  {
+    id: "c3",
+    blogId: "demo-blog-1",
+    author: { name: "Simran Kaur", image: "" },
+    text: "Loved the visuals and code snippets!",
+    votes: 9,
+    replies: [],
+  },
+  {
+    id: "c4",
+    blogId: "demo-blog-1",
+    author: { name: "Mohit Rathi", image: "" },
+    text: "It would be nice to have downloadable resources too.",
+    votes: 3,
+    replies: [],
+  },
+  {
+    id: "c5",
+    blogId: "demo-blog-1",
+    author: { name: "Neha Patel", image: "" },
+    text: "This is gold 🙌! Sharing it with my team.",
+    votes: 15,
+    replies: [],
+  },
+];
+
+export const dummyEventComments = [
+  {
+    id: "c1",
+    eventId: "demo-event-1",
+    author: { name: "Aarav Mehta", image: "" },
+    text: "This event was super insightful—thanks to the organizers!",
+    votes: 12,
+    replies: [
+      {
+        id: "r1",
+        eventId: "demo-event-1",
+        parentId: "c1",
+        author: { name: "Priya Singh", image: "" },
+        text: "Absolutely! The speakers were great too.",
+        votes: 4,
+      },
+    ],
+  },
+  {
+    id: "c2",
+    eventId: "demo-event-1",
+    author: { name: "Ravi Verma", image: "" },
+    text: "Can we get a recording of the session?",
+    votes: 7,
+    replies: [
+      {
+        id: "r2",
+        eventId: "demo-event-1",
+        parentId: "c2",
+        author: { name: "Organizer", image: "" },
+        text: "Yes, we’ll upload it by tomorrow!",
+        votes: 6,
+      },
+    ],
+  },
+  {
+    id: "c3",
+    eventId: "demo-event-1",
+    author: { name: "Simran Kaur", image: "" },
+    text: "Really appreciated the networking part of this event!",
+    votes: 9,
+    replies: [],
+  },
+  {
+    id: "c4",
+    eventId: "demo-event-1",
+    author: { name: "Mohit Rathi", image: "" },
+    text: "Would love some follow-up workshops.",
+    votes: 3,
+    replies: [],
+  },
+  {
+    id: "c5",
+    eventId: "demo-event-1",
+    author: { name: "Neha Patel", image: "" },
+    text: "Such a valuable session 🙌! Kudos to everyone involved.",
+    votes: 15,
+    replies: [],
+  },
+];
