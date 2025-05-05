@@ -8,8 +8,7 @@ import { toast } from "sonner";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { useAppDispatch } from "@/lib/reduxstore/hooks";
-import { login } from "@/lib/reduxstore/authSlice";
+import { useUser } from "@/context/UserContext";
 
 const loginSchema = z.object({
   username: z.string().min(3, "Username or Student ID is required"),
@@ -19,8 +18,8 @@ const loginSchema = z.object({
 type LoginFormInputs = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
-  const dispatch = useAppDispatch(); // Assuming you have set up Redux
   const router = useRouter();
+  const { setUser } = useUser();
   const {
     register,
     handleSubmit,
@@ -43,10 +42,11 @@ export default function LoginPage() {
       );
       if (response.status === 200) {
         console.log(response.data);
-        dispatch(login(response.data.user)); // Dispatch login action with user data
+
         toast.success(
           response.data.message || "Login successful! Redirecting..."
         );
+        setUser(response.data.user);
         router.push("/home"); // Redirect after success
       }
     } catch (error: any) {

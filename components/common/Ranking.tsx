@@ -1,3 +1,4 @@
+//? WORK ON RANKING IS REQUIRED
 import React from "react";
 import { Medal, Star } from "lucide-react";
 

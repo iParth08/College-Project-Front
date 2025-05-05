@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Logo from "./Logo";
 import Title from "./Title";
@@ -7,11 +9,11 @@ import { navlinks } from "@/lib/constant";
 import { suggestedEvents } from "@/lib/dummy-db/event";
 import { suggestedBlogs } from "@/lib/dummy-db/blog";
 import { LuLogIn } from "react-icons/lu";
-import { useAppSelector } from "@/lib/reduxstore/hooks";
+import { useUser } from "@/context/UserContext";
 
 const Footer = () => {
-  const isLoggedIn = true;
-  // const isLoggedIn = useAppSelector((state) => state.auth.isAuthenticated);
+  const { isLoggedIn } = useUser();
+
   return (
     <footer className="w-full bg-zinc-900 text-white py-10 px-5 md:px-16">
       {isLoggedIn ? (
@@ -75,11 +77,11 @@ const Footer = () => {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center space-y-4 max-w-md mx-auto text-center">
-          <Logo styles="text-4xl md:text-5xl" />
-          <Title styles="text-xl md:text-2xl text-gray-300" />
+          <Logo styles="text-4xl md:text-5xl" color="text-white" />
+          <Title styles="text-xl md:text-4xl" color="text-white" />
           <p className="text-gray-400">Join and explore your inner campus.</p>
           <Link href={"/register"}>
-            <Button className="md:text-lg bg-white text-zinc-800 hover:bg-indigo-500 hover:text-white px-6 py-2">
+            <Button className="md:text-lg bg-white text-zinc-800 hover:bg-indigo-500 hover:text-white px-6 py-2 cursor-pointer">
               <LuLogIn className="mr-2" />
               Register
             </Button>

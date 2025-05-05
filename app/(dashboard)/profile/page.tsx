@@ -32,11 +32,6 @@ type UserProfile = {
 export default function ProfilePage() {
   const [user, setUser] = useState<UserProfile | null>(null);
 
-  // const handleProfileUpdate = (updatedUser: UserProfile) => {
-  //   setUser(updatedUser);
-  //   console.log("Updated user profile:", updatedUser);
-  // };
-
   useEffect(() => {
     // Dummy fetch - replace with actual API call
     setUser(dummyUser); // For testing purposes, replace with actual API call
@@ -47,7 +42,7 @@ export default function ProfilePage() {
   return (
     <div className="max-w-6xl mx-auto p-4 space-y-20">
       {/* Section 1: Profile Overview */}
-      <UserProfileCard user={user} />
+      <UserProfileCard />
 
       {/* Section 2: Clubs & Events */}
       <div className="space-y-4">
@@ -56,32 +51,6 @@ export default function ProfilePage() {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {dummyUser.clubs.map((club) => (
-            // <Card key={club._id} className="p-4 shadow-md">
-            //   <img
-            //     src={club.coverImage}
-            //     className="rounded-md h-32 w-full object-cover mb-2"
-            //   />
-            //   <h4 className="text-lg font-medium">{club.name}</h4>
-            //   <div className="mt-2">
-            //     {club.announcements.length ? (
-            //       <ul className="list-disc list-inside text-sm text-muted-foreground">
-            //         {club.announcements.map((a) => (
-            //           <li key={a.id}>{a.title}</li>
-            //         ))}
-            //       </ul>
-            //     ) : (
-            //       <p className="text-sm text-muted-foreground">
-            //         No announcements
-            //       </p>
-            //     )}
-            //   </div>
-            //   <a
-            //     href={`/club/${club._id}`}
-            //     className="mt-3 inline-block text-blue-600 hover:underline text-sm"
-            //   >
-            //     Visit Club House
-            //   </a>
-            // </Card>
             <JoinedClubCard key={club._id} club={club} />
           ))}
         </div>

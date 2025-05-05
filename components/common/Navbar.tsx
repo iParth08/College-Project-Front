@@ -9,14 +9,12 @@ import { HiOutlineBars3 } from "react-icons/hi2";
 import { navlinks } from "@/lib/constant";
 import { LuLogIn } from "react-icons/lu";
 import { usePathname } from "next/navigation";
-import { useAppSelector } from "@/lib/reduxstore/hooks";
+import { useUser } from "@/context/UserContext";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false); // State for collapsible menu
   const pathname = usePathname();
-
-  // const isLoggedIn = useAppSelector((state) => state.auth.isAuthenticated);
-  const isLoggedIn = true;
+  const { isLoggedIn } = useUser();
 
   const handleMenuToggle = () => {
     setMenuOpen(!menuOpen);
@@ -25,8 +23,11 @@ const Navbar = () => {
   return (
     <div className="fixed top-0 left-0 w-full h-[10vh] bg-gray-50 text-zinc-800 flex justify-between items-center px-[90px] shadow-md z-50 mb-[10vh]">
       <div className="flex space-x-6">
-        <Logo styles="md:text-3xl text-lg" />
-        <Title styles="md:text-3xl text-lg text-indigo-500 font-semibold " />
+        <Logo styles="md:text-3xl text-lg" color="text-zinc-800" />
+        <Title
+          styles="md:text-3xl text-lg font-semibold"
+          color="text-zinc-800"
+        />
       </div>
 
       {/* Main menu for larger screens */}
@@ -99,8 +100,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-//todo: add a ranking component to show the rank of the user in the navbar
-//? Animate the links in the navbar when hovered
-//? add avatar for user profile
-//Stick on the top of the page when scrolled down

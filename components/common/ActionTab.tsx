@@ -1,27 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAppDispatch, useAppSelector } from "@/lib/reduxstore/hooks";
-import { login } from "@/lib/reduxstore/authSlice";
-import { set } from "react-hook-form";
+import { useUser } from "@/context/UserContext";
 
 const ActionTab = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
-    const userdata = localStorage.getItem("user");
-
-    if (isAuthenticated && userdata) {
-      const parsedUser = JSON.parse(userdata);
-      dispatch(login(parsedUser)); // Dispatch login action with user data
-      setIsLoggedIn(true);
-    }
-  }, []);
+  const { user, isLoggedIn } = useUser();
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-50 p-4 w-[600px] mx-auto">
@@ -45,7 +30,7 @@ const ActionTab = () => {
                 <div className="text-lg flex flex-col items-center mt-5 space-y-2">
                   {isLoggedIn ? (
                     <>
-                      <p>Dear, Member!</p>
+                      <p>Dear, {user?.username} </p>
                       <Link href="/home">
                         <button className="bg-white text-blue-500 px-4 py-2 rounded-lg shadow-md hover:bg-blue-100 transition duration-300 ease-in-out">
                           Welcome Home
